@@ -36,3 +36,6 @@ dist
 
 # pnpm
 .pnpm-store
+
+# Docker postgres data
+/data
