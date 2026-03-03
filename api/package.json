@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts"
+    "dev": "tsx watch src/server.ts",
+    "prepare": "cd .. && husky api/.husky"
   },
   "keywords": [],
   "author": "",
@@ -13,8 +14,14 @@
   "dependencies": {
     "fastify": "^5.7.4"
   },
+  "lint-staged": {
+    "*.{ts,js,json}": "biome check --write --no-errors-on-unmatched"
+  },
   "devDependencies": {
+    "@biomejs/biome": "2.4.5",
     "@types/node": "^25.3.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
