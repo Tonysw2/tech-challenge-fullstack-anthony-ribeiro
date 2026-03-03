@@ -39,3 +39,6 @@ dist
 
 # Docker postgres data
 /data
+
+# Prisma generated client
+src/app/lib/prisma/generated/
