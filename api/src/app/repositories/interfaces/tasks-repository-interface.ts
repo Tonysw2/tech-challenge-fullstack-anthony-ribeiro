@@ -9,4 +9,5 @@ export interface ITasksRepository {
   countByUserId(userId: string): Promise<number>
   findById(id: string): Promise<Task | null>
   update(data: UpdateTaskDTO): Promise<Task>
+  delete(id: string): Promise<void>
 }

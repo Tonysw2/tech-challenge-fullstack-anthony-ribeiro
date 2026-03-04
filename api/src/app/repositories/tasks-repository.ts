@@ -34,4 +34,8 @@ export class TasksRepository implements ITasksRepository {
   async update({ id, userId, ...data }: UpdateTaskDTO) {
     return db.task.update({ where: { id, userId }, data })
   }
+
+  async delete(id: string): Promise<void> {
+    await db.task.delete({ where: { id } })
+  }
 }
