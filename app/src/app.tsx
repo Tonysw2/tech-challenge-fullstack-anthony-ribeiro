@@ -1,9 +1,6 @@
-import { Button } from './components/ui/button'
+import { RouterProvider } from 'react-router'
+import { router } from './routes'
 
-export function App() {
-  return (
-    <div>
-      <Button>Todo app</Button>
-    </div>
-  )
+export default function App() {
+  return <RouterProvider router={router} />
 }
