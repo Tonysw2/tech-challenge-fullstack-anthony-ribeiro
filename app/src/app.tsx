@@ -1,4 +1,5 @@
 import { RouterProvider } from 'react-router'
+import { Toaster } from './components/ui/sonner'
 import { storageKeys } from './config/storage-keys'
 import { TanstackQueryProvider } from './providers/tanstack-query-provider'
 import { ThemeProvider } from './providers/theme-provider'
@@ -9,6 +10,7 @@ export default function App() {
     <TanstackQueryProvider>
       <ThemeProvider defaultTheme="system" storageKey={storageKeys.theme}>
         <RouterProvider router={router} />
+        <Toaster />
       </ThemeProvider>
     </TanstackQueryProvider>
   )

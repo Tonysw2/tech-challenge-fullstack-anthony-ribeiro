@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 import { RootLayout } from './components/layout/root-layout'
 import { SignInPage } from './pages/sign-in'
-import { SignUpPage } from './pages/sign-up'
+import { SignUpPage } from './pages/sign-up/sign-up'
 
 export const router = createBrowserRouter([
   {
