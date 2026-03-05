@@ -30,10 +30,11 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const queryClient = useQueryClient()
-  const [accessToken, setAccessToken] = useState(() =>
-    localStorage.getItem(storageKeys.accessToken),
-  )
-  const [isSignedIn, setIsSignedIn] = useState(() => Boolean(accessToken))
+
+  const [isSignedIn, setIsSignedIn] = useState(() => {
+    const token = localStorage.getItem(storageKeys.accessToken)
+    return Boolean(token)
+  })
 
   const { data, isFetching, isSuccess, isError } = useQuery({
     ...authQueries.profile(),
@@ -42,14 +43,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const authenticate = useCallback((token: string, refreshToken: string) => {
     localStorage.setItem(storageKeys.accessToken, token)
     localStorage.setItem(storageKeys.refreshToken, refreshToken)
-    setAccessToken(token)
     setIsSignedIn(true)
   }, [])
 
   const signOut = useCallback(() => {
     localStorage.removeItem(storageKeys.accessToken)
     localStorage.removeItem(storageKeys.refreshToken)
-    setAccessToken(null)
     setIsSignedIn(false)
     queryClient.removeQueries()
   }, [queryClient])
@@ -62,13 +61,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useLayoutEffect(() => {
     const interceptorId = httpClient.interceptors.request.use((config) => {
-      if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
+      const accessToken = localStorage.getItem(storageKeys.accessToken)
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`
+      }
       return config
     })
+
     return () => {
       httpClient.interceptors.request.eject(interceptorId)
     }
-  }, [accessToken])
+  }, [])
 
   useLayoutEffect(() => {
     let isRefreshing = false
