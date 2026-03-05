@@ -44,7 +44,7 @@ export function SignInPage() {
                 Login with Google
               </Button>
               <FieldDescription className="text-center">
-                Don&apos;t have an account? <Link to="/signup">Sign up</Link>
+                Don&apos;t have an account? <Link to="/sign-up">Sign up</Link>
               </FieldDescription>
             </Field>
           </FieldGroup>

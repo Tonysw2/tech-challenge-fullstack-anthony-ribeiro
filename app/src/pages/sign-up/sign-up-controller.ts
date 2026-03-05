@@ -2,14 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
-import { storageKeys } from '@/config/storage-keys'
 import { authMutations } from '@/mutations/auth.mutations'
+import { useAuth } from '@/providers/auth-provider'
 import { type SignUpFormData, signUpSchema } from './sign-up.schema'
 
 export function useSignUpController() {
-  const navigate = useNavigate()
+  const { authenticate } = useAuth()
 
   const form = useForm<SignUpFormData>({
     // @ts-expect-error
@@ -26,9 +25,7 @@ export function useSignUpController() {
         email: data.email,
         password: data.password,
       })
-      localStorage.setItem(storageKeys.accessToken, accessToken)
-      localStorage.setItem(storageKeys.refreshToken, refreshToken)
-      navigate('/sign-in')
+      authenticate(accessToken, refreshToken)
     } catch (error) {
       if (isAxiosError(error)) {
         const code = error.response?.data?.code
