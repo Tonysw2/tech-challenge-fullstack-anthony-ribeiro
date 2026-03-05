@@ -5,4 +5,5 @@ export interface IUsersRepository {
   create(data: CreateUserDTO): Promise<Omit<User, 'passwordHash'>>
   findByEmail(email: string): Promise<Omit<User, 'passwordHash'> | null>
   findByEmailWithPassword(email: string): Promise<User | null>
+  findById(id: string): Promise<Omit<User, 'passwordHash'> | null>
 }

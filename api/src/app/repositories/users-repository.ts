@@ -26,4 +26,8 @@ export class UsersRepository implements IUsersRepository {
   async findByEmailWithPassword(email: string) {
     return db.user.findUnique({ where: { email } })
   }
+
+  async findById(id: string) {
+    return db.user.findUnique({ where: { id }, omit: { passwordHash: true } })
+  }
 }
