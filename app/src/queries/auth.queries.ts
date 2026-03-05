@@ -11,6 +11,6 @@ export const authQueries = {
     queryOptions({
       queryKey: authKeys.profile(),
       queryFn: getProfile,
-      retry: false,
+      staleTime: Number.POSITIVE_INFINITY,
     }),
 }

@@ -54,10 +54,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [queryClient])
 
   useEffect(() => {
-    if (!data?.user || isError) {
+    if (isError || (isSuccess && !data?.user)) {
       signOut()
     }
-  }, [data?.user, isError, signOut])
+  }, [data?.user, isError, isSuccess, signOut])
 
   return (
     <AuthContext.Provider
