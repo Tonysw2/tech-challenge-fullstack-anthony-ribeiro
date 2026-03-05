@@ -6,11 +6,14 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useState,
 } from 'react'
 import { storageKeys } from '@/config/storage-keys'
 import type { User } from '@/entities/user'
 import { authQueries } from '@/queries/auth.queries'
+import { refreshToken } from '@/services/auth/refresh-token'
+import { httpClient } from '@/services/http-client'
 
 interface AuthContextValue {
   user: User | undefined
@@ -27,28 +30,26 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const queryClient = useQueryClient()
-  const [isSignedIn, setIsSignedIn] = useState(() => {
-    const token = localStorage.getItem(storageKeys.accessToken)
-    return Boolean(token)
-  })
+  const [accessToken, setAccessToken] = useState(() =>
+    localStorage.getItem(storageKeys.accessToken),
+  )
+  const [isSignedIn, setIsSignedIn] = useState(() => Boolean(accessToken))
 
   const { data, isFetching, isSuccess, isError } = useQuery({
     ...authQueries.profile(),
     enabled: !!isSignedIn,
   })
-
-  const authenticate = useCallback(
-    (accessToken: string, refreshToken: string) => {
-      localStorage.setItem(storageKeys.accessToken, accessToken)
-      localStorage.setItem(storageKeys.refreshToken, refreshToken)
-      setIsSignedIn(true)
-    },
-    [],
-  )
+  const authenticate = useCallback((token: string, refreshToken: string) => {
+    localStorage.setItem(storageKeys.accessToken, token)
+    localStorage.setItem(storageKeys.refreshToken, refreshToken)
+    setAccessToken(token)
+    setIsSignedIn(true)
+  }, [])
 
   const signOut = useCallback(() => {
     localStorage.removeItem(storageKeys.accessToken)
     localStorage.removeItem(storageKeys.refreshToken)
+    setAccessToken(null)
     setIsSignedIn(false)
     queryClient.removeQueries()
   }, [queryClient])
@@ -58,6 +59,88 @@ export function AuthProvider({ children }: AuthProviderProps) {
       signOut()
     }
   }, [data?.user, isError, isSuccess, signOut])
+
+  useLayoutEffect(() => {
+    const interceptorId = httpClient.interceptors.request.use((config) => {
+      if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`
+      return config
+    })
+    return () => {
+      httpClient.interceptors.request.eject(interceptorId)
+    }
+  }, [accessToken])
+
+  useLayoutEffect(() => {
+    let isRefreshing = false
+    let queue: Array<{
+      resolve: (token: string) => void
+      reject: (error: unknown) => void
+    }> = []
+
+    const interceptorId = httpClient.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config
+
+        if (
+          error.response?.status !== 401 ||
+          originalRequest._retry ||
+          originalRequest.url?.includes('/refresh-token')
+        ) {
+          return Promise.reject(error)
+        }
+
+        const storedRefreshToken = localStorage.getItem(
+          storageKeys.refreshToken,
+        )
+        if (!storedRefreshToken) {
+          signOut()
+          return Promise.reject(error)
+        }
+
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            queue.push({
+              resolve: (newToken) => {
+                originalRequest.headers.Authorization = `Bearer ${newToken}`
+                resolve(httpClient(originalRequest))
+              },
+              reject,
+            })
+          })
+        }
+
+        originalRequest._retry = true
+        isRefreshing = true
+
+        try {
+          const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+            await refreshToken(storedRefreshToken)
+
+          authenticate(newAccessToken, newRefreshToken)
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+          queue.forEach(({ resolve }) => {
+            resolve(newAccessToken)
+          })
+          queue = []
+          return httpClient(originalRequest)
+        } catch (refreshError) {
+          queue.forEach(({ reject }) => {
+            reject(refreshError)
+          })
+          queue = []
+          signOut()
+          return Promise.reject(refreshError)
+        } finally {
+          isRefreshing = false
+        }
+      },
+    )
+
+    return () => {
+      httpClient.interceptors.response.eject(interceptorId)
+    }
+  }, [authenticate, signOut])
 
   return (
     <AuthContext.Provider
