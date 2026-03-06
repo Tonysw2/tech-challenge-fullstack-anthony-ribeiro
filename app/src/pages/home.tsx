@@ -1,15 +1,22 @@
-import { Button } from '@/components/ui/button'
-import { useAuth } from '@/providers/auth-provider'
+import { Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
+import { AppHeader } from '@/components/app-header'
+import { TaskList } from '@/components/task-list'
+import { TaskListError } from '@/components/task-list-error'
+import { TaskListSkeleton } from '@/components/task-list-skeleton'
 
 export function HomePage() {
-  const { user, signOut } = useAuth()
-
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="font-bold text-2xl">Welcome, {user?.name}</h1>
-      <Button variant="outline" onClick={signOut} className="w-fit">
-        Sign out
-      </Button>
+    <div className="mx-auto mt-20 w-full max-w-lg">
+      <AppHeader />
+
+      <main className="mt-10">
+        <ErrorBoundary fallback={<TaskListError />}>
+          <Suspense fallback={<TaskListSkeleton />}>
+            <TaskList />
+          </Suspense>
+        </ErrorBoundary>
+      </main>
     </div>
   )
 }

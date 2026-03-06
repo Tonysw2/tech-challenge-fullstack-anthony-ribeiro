@@ -1,6 +1,5 @@
 import { createBrowserRouter } from 'react-router'
 import { AuthGuard } from './components/guards/auth-guard'
-import { InternalLayout } from './components/layout/internal-layout'
 import { RootLayout } from './components/layout/root-layout'
 import { HomePage } from './pages/home'
 import { SignInPage } from './pages/sign-in/sign-in'
@@ -29,14 +28,8 @@ export const router = createBrowserRouter([
     element: <AuthGuard type="private" />,
     children: [
       {
-        path: '/',
-        Component: InternalLayout,
-        children: [
-          {
-            index: true,
-            Component: HomePage,
-          },
-        ],
+        index: true,
+        Component: HomePage,
       },
     ],
   },
