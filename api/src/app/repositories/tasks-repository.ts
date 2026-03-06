@@ -12,7 +12,7 @@ export class TasksRepository implements ITasksRepository {
   async findByUserId({ userId, cursor, limit }: ListTasksDTO) {
     return db.task.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ id: 'desc' }, { createdAt: 'desc' }],
       take: limit + 1,
       ...(cursor && {
         skip: 1,
