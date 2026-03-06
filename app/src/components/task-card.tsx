@@ -24,6 +24,7 @@ import {
 } from './ui/alert-dialog'
 import { Button } from './ui/button'
 import { Card, CardContent } from './ui/card'
+import { UpdateTaskDialog } from './update-task-dialog'
 
 interface TaskCardProps {
   task: Task
@@ -31,6 +32,7 @@ interface TaskCardProps {
 
 export function TaskCard({ task }: TaskCardProps) {
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
 
   const { mutateAsync: deleteTask } = useMutation(taskMutations.remove())
 
@@ -80,7 +82,7 @@ export function TaskCard({ task }: TaskCardProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setEditOpen(true)}>
                   <Pencil className="size-4" />
                   Edit
                 </DropdownMenuItem>
@@ -96,6 +98,12 @@ export function TaskCard({ task }: TaskCardProps) {
           </div>
         </CardContent>
       </Card>
+
+      <UpdateTaskDialog
+        task={task}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+      />
 
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>
