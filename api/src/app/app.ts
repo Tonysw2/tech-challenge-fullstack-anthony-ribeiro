@@ -11,6 +11,7 @@ export const app = fastify()
 app.register(fastifyCors, {
   origin: env.CORS_ORIGIN,
   credentials: true,
+  methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
 })
 
 app.register(fastifyJwt, { secret: env.JWT_SECRET })
