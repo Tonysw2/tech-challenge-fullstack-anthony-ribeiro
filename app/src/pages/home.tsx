@@ -7,10 +7,10 @@ import { TaskListSkeleton } from '@/components/task-list-skeleton'
 
 export function HomePage() {
   return (
-    <div className="mx-auto mt-20 w-full max-w-lg">
+    <div className="mx-auto flex h-svh w-full max-w-lg flex-col py-10">
       <AppHeader />
 
-      <main className="mt-10">
+      <main className="mt-10 flex min-h-0 flex-1 flex-col overflow-hidden">
         <ErrorBoundary fallback={<TaskListError />}>
           <Suspense fallback={<TaskListSkeleton />}>
             <TaskList />
