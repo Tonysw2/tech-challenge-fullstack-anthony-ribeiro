@@ -35,14 +35,22 @@ export function TaskCard({ task }: TaskCardProps) {
   const [editOpen, setEditOpen] = useState(false)
 
   const { mutateAsync: deleteTask } = useMutation(taskMutations.remove())
-
-  const formattedTime = new Intl.DateTimeFormat('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).format(new Date(task.updatedAt))
+  const { mutateAsync: updateTask, isPending: isUpdatingTask } = useMutation(
+    taskMutations.update(),
+  )
 
   const isComplete = task.status === 'COMPLETE'
+
+  async function handleToggleStatus() {
+    try {
+      await updateTask({
+        id: task.id,
+        status: isComplete ? 'PENDING' : 'COMPLETE',
+      })
+    } catch {
+      toast.error('Failed to update task status')
+    }
+  }
 
   async function handleDelete() {
     try {
@@ -57,7 +65,11 @@ export function TaskCard({ task }: TaskCardProps) {
     <>
       <Card className="py-3">
         <CardContent className="flex items-center gap-4 px-3">
-          <Checkbox checked={isComplete} />
+          <Checkbox
+            checked={isComplete}
+            disabled={isUpdatingTask}
+            onCheckedChange={handleToggleStatus}
+          />
 
           <div className="flex grow flex-col">
             <span className="font-semibold">{task.title}</span>
@@ -70,10 +82,6 @@ export function TaskCard({ task }: TaskCardProps) {
             <Badge variant={isComplete ? 'complete' : 'pending'}>
               {isComplete ? 'Complete' : 'Pending'}
             </Badge>
-
-            <span className="whitespace-nowrap text-muted-foreground text-xs">
-              Due {formattedTime}
-            </span>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

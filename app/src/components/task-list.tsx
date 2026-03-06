@@ -35,7 +35,7 @@ export function TaskList() {
       },
       {
         root: taskListContainerRef.current,
-        rootMargin: '200px',
+        rootMargin: '100px',
       },
     )
 
@@ -49,7 +49,9 @@ export function TaskList() {
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between pb-4">
-        <span className="text-muted-foreground text-sm">{count} tasks</span>
+        <span className="text-muted-foreground text-sm">
+          {tasks.length} tasks of {count}
+        </span>
         <CreateTaskDialog />
       </div>
 
