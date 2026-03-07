@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { InMemoryUsersRepository } from '@/tests/repositories/in-memory/in-memory-users-repository.js'
 import { InvalidCredentials } from '@/app/use-cases/errors/invalid-credentials.js'
 import { SignInUseCase } from '@/app/use-cases/sign-in.js'
 import { SignUpUseCase } from '@/app/use-cases/sign-up.js'
+import { InMemoryUsersRepository } from '@/tests/repositories/in-memory/in-memory-users-repository.js'
 
 describe('SignInUseCase', () => {
   let usersRepository: InMemoryUsersRepository

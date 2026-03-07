@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '../src/app/lib/prisma/generated/client.js'
 import bcrypt from 'bcryptjs'
+import { PrismaClient } from '../src/app/lib/prisma/generated/client.js'
 
 const db = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }),
@@ -49,12 +49,20 @@ async function main() {
       return {
         userId: user.id,
         title: `Task ${index}: ${description}`,
-        description: index % 3 === 0 ? null : `Details for task ${index} assigned to ${userData.name}.`,
-        status: (index <= 25 ? 'PENDING' : 'COMPLETE') as 'PENDING' | 'COMPLETE',
+        description:
+          index % 3 === 0
+            ? null
+            : `Details for task ${index} assigned to ${userData.name}.`,
+        status: (index <= 25 ? 'PENDING' : 'COMPLETE') as
+          | 'PENDING'
+          | 'COMPLETE',
       }
     })
 
-    const result = await db.task.createMany({ data: tasks, skipDuplicates: true })
+    const result = await db.task.createMany({
+      data: tasks,
+      skipDuplicates: true,
+    })
     console.log(`Created ${result.count} tasks for ${user.email}`)
   }
 }

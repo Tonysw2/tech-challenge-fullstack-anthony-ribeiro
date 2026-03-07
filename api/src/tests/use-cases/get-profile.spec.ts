@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { InMemoryUsersRepository } from '@/tests/repositories/in-memory/in-memory-users-repository.js'
 import { ResourceNotFound } from '@/app/use-cases/errors/resource-not-found.js'
 import { GetProfileUseCase } from '@/app/use-cases/get-profile.js'
+import { InMemoryUsersRepository } from '@/tests/repositories/in-memory/in-memory-users-repository.js'
 
 describe('GetProfileUseCase', () => {
   let usersRepository: InMemoryUsersRepository

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { InMemoryTasksRepository } from '@/tests/repositories/in-memory/in-memory-tasks-repository.js'
 import { DeleteTaskUseCase } from '@/app/use-cases/delete-task.js'
 import { ResourceNotFound } from '@/app/use-cases/errors/resource-not-found.js'
+import { InMemoryTasksRepository } from '@/tests/repositories/in-memory/in-memory-tasks-repository.js'
 
 describe('DeleteTaskUseCase', () => {
   let tasksRepository: InMemoryTasksRepository
