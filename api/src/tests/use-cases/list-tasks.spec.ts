@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { InMemoryTasksRepository } from '@/tests/repositories/in-memory/in-memory-tasks-repository.js'
-import { ListTasksUseCase } from './list-tasks.js'
+import { ListTasksUseCase } from '@/app/use-cases/list-tasks.js'
 
 describe('ListTasksUseCase', () => {
   let tasksRepository: InMemoryTasksRepository

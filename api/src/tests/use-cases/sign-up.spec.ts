@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { InMemoryUsersRepository } from '@/tests/repositories/in-memory/in-memory-users-repository.js'
-import { EmailAlreadyInUse } from './errors/email-already-in-use.js'
-import { SignUpUseCase } from './sign-up.js'
+import { EmailAlreadyInUse } from '@/app/use-cases/errors/email-already-in-use.js'
+import { SignUpUseCase } from '@/app/use-cases/sign-up.js'
 
 describe('SignUpUseCase', () => {
   let usersRepository: InMemoryUsersRepository
