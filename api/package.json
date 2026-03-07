@@ -11,7 +11,9 @@
     "db:generate": "prisma generate",
     "db:migrate:dev": "prisma migrate dev",
     "db:seed": "prisma db seed",
-    "db:reset": "prisma migrate reset"
+    "db:reset": "prisma migrate reset",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "type": "module",
   "keywords": [],
@@ -42,6 +44,8 @@
     "lint-staged": "^16.3.1",
     "prisma": "^7.4.2",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.0.18"
   }
 }
