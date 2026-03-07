@@ -33,4 +33,17 @@ describe('PATCH /tasks/:id', () => {
     expect(response.body.task.title).toBe('Updated title')
     expect(response.body.task.status).toBe('COMPLETE')
   })
+
+  it('returns 404 when task does not exist', async () => {
+    const { accessToken } = await createAndAuthenticateUser(request, {
+      email: 'test2@example.com',
+    })
+
+    const response = await request
+      .patch('/tasks/00000000-0000-0000-0000-000000000000')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({ title: 'Updated title' })
+
+    expect(response.status).toBe(404)
+  })
 })

@@ -23,4 +23,12 @@ describe('POST /refresh-token', () => {
     expect(response.body).toHaveProperty('accessToken')
     expect(response.body).toHaveProperty('refreshToken')
   })
+
+  it('returns 401 on invalid refresh token', async () => {
+    const response = await request
+      .post('/refresh-token')
+      .send({ refreshToken: 'invalid.token.here' })
+
+    expect(response.status).toBe(401)
+  })
 })

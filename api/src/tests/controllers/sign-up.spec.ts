@@ -26,4 +26,20 @@ describe('POST /sign-up', () => {
       refreshToken: expect.any(String),
     })
   })
+
+  it('returns 409 when email is already in use', async () => {
+    await request.post('/sign-up').send({
+      name: 'Alice',
+      email: 'alice-dup@example.com',
+      password: 'secret123',
+    })
+
+    const response = await request.post('/sign-up').send({
+      name: 'Alice',
+      email: 'alice-dup@example.com',
+      password: 'secret123',
+    })
+
+    expect(response.status).toBe(409)
+  })
 })

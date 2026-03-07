@@ -30,4 +30,16 @@ describe('DELETE /tasks/:id', () => {
 
     expect(response.status).toBe(204)
   })
+
+  it('returns 404 when task does not exist', async () => {
+    const { accessToken } = await createAndAuthenticateUser(request, {
+      email: 'test2@example.com',
+    })
+
+    const response = await request
+      .delete('/tasks/00000000-0000-0000-0000-000000000000')
+      .set('Authorization', `Bearer ${accessToken}`)
+
+    expect(response.status).toBe(404)
+  })
 })

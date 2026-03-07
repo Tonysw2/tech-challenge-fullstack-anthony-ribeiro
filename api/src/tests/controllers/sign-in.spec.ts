@@ -31,4 +31,13 @@ describe('POST /sign-in', () => {
       refreshToken: expect.any(String),
     })
   })
+
+  it('returns 401 on invalid credentials', async () => {
+    const response = await request.post('/sign-in').send({
+      email: 'nonexistent@example.com',
+      password: 'wrongpassword',
+    })
+
+    expect(response.status).toBe(401)
+  })
 })

@@ -14,7 +14,8 @@
     "db:seed": "prisma db seed",
     "db:reset": "prisma migrate reset",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "type": "module",
   "keywords": [],
@@ -42,6 +43,7 @@
     "@types/node": "^25.3.3",
     "@types/pg": "^8.18.0",
     "@types/supertest": "^7.2.0",
+    "@vitest/coverage-v8": "^4.0.18",
     "husky": "^9.1.7",
     "lint-staged": "^16.3.1",
     "prisma": "^7.4.2",
