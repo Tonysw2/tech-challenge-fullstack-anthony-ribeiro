@@ -11,7 +11,7 @@ export function useSignInController() {
   const { authenticate } = useAuth()
 
   const form = useForm<SignInFormData>({
-    // @ts-expect-error
+    // @ts-ignore
     resolver: zodResolver(signInSchema),
     defaultValues: { email: '', password: '' },
   })

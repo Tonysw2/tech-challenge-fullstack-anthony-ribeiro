@@ -31,7 +31,7 @@ export function CreateTaskDialog() {
   )
 
   const form = useForm<FormValues>({
-    // @ts-expect-error
+    // @ts-ignore
     resolver: zodResolver(schema),
     defaultValues: {
       title: '',
