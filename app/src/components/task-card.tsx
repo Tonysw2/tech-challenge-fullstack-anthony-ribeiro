@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react'
-import { useState } from 'react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -12,29 +11,16 @@ import {
 } from '@/components/ui/dropdown-menu'
 import type { Task } from '@/entities/task'
 import { taskMutations } from '@/mutations/tasks.mutations'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from './ui/alert-dialog'
 import { Button } from './ui/button'
 import { Card, CardContent } from './ui/card'
-import { UpdateTaskDialog } from './update-task-dialog'
 
 interface TaskCardProps {
   task: Task
+  onEditClick: (task: Task) => void
+  onDeleteClick: (task: Task) => void
 }
 
-export function TaskCard({ task }: TaskCardProps) {
-  const [deleteOpen, setDeleteOpen] = useState(false)
-  const [editOpen, setEditOpen] = useState(false)
-
-  const { mutateAsync: deleteTask } = useMutation(taskMutations.remove())
+export function TaskCard({ task, onEditClick, onDeleteClick }: TaskCardProps) {
   const { mutateAsync: updateTask, isPending: isUpdatingTask } = useMutation(
     taskMutations.update(),
   )
@@ -49,15 +35,6 @@ export function TaskCard({ task }: TaskCardProps) {
       })
     } catch {
       toast.error('Failed to update task status')
-    }
-  }
-
-  async function handleDelete() {
-    try {
-      await deleteTask(task.id)
-      toast.success('Task deleted successfully')
-    } catch {
-      toast.error('Failed to delete task')
     }
   }
 
@@ -90,13 +67,13 @@ export function TaskCard({ task }: TaskCardProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={() => setEditOpen(true)}>
+                <DropdownMenuItem onSelect={() => onEditClick(task)}>
                   <Pencil className="size-4" />
                   Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   variant="destructive"
-                  onSelect={() => setDeleteOpen(true)}
+                  onSelect={() => onDeleteClick(task)}
                 >
                   <Trash2 className="size-4" />
                   Delete
@@ -106,28 +83,6 @@ export function TaskCard({ task }: TaskCardProps) {
           </div>
         </CardContent>
       </Card>
-
-      <UpdateTaskDialog
-        task={task}
-        open={editOpen}
-        onOpenChange={setEditOpen}
-      />
-
-      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Task?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. The task "{task.title}" will be
-              permanently deleted.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   )
 }

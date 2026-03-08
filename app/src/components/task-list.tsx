@@ -1,13 +1,19 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
 import { ClipboardList, Loader2 } from 'lucide-react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { Task } from '@/entities/task'
 import { taskQueries } from '@/queries/tasks.queries'
 import { CreateTaskDialog } from './create-task-dialog'
+import { DeleteTaskDialog } from './delete-task-dialog'
 import { TaskCard } from './task-card'
+import { UpdateTaskDialog } from './update-task-dialog'
 
 export function TaskList() {
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useSuspenseInfiniteQuery(taskQueries.infiniteList({ limit: 10 }))
+
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null)
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null)
 
   const tasks = data.pages.flatMap((p) => p.tasks)
   const count = data.pages[0]?.meta.count ?? 0
@@ -68,7 +74,12 @@ export function TaskList() {
         )}
 
         {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskCard
+            key={task.id}
+            task={task}
+            onEditClick={setTaskToEdit}
+            onDeleteClick={setTaskToDelete}
+          />
         ))}
 
         {isFetchingNextPage && (
@@ -79,6 +90,20 @@ export function TaskList() {
 
         {hasNextPage && <div ref={bottomTaskListTargetRef} />}
       </div>
+
+      {taskToEdit && (
+        <UpdateTaskDialog
+          task={taskToEdit}
+          onAnimationEnd={() => setTaskToEdit(null)}
+        />
+      )}
+
+      {taskToDelete && (
+        <DeleteTaskDialog
+          task={taskToDelete}
+          onAnimationEnd={() => setTaskToDelete(null)}
+        />
+      )}
     </div>
   )
 }
