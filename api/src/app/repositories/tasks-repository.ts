@@ -1,0 +1,41 @@
+import { db } from '../lib/prisma/client.js'
+import type { CreateTaskDTO } from './dtos/create-task-dto.js'
+import type { ListTasksDTO } from './dtos/list-tasks-dto.js'
+import type { UpdateTaskDTO } from './dtos/update-task-dto.js'
+import type { ITasksRepository } from './interfaces/tasks-repository-interface.js'
+
+export class TasksRepository implements ITasksRepository {
+  async create(data: CreateTaskDTO) {
+    return db.task.create({ data })
+  }
+
+  async findByUserId({ userId, cursor, limit }: ListTasksDTO) {
+    return db.task.findMany({
+      where: { userId },
+      orderBy: [{ id: 'desc' }, { createdAt: 'desc' }],
+      take: limit + 1,
+      ...(cursor && {
+        skip: 1,
+        cursor: {
+          id: cursor,
+        },
+      }),
+    })
+  }
+
+  async countByUserId(userId: string) {
+    return db.task.count({ where: { userId } })
+  }
+
+  async findById(id: string) {
+    return db.task.findUnique({ where: { id } })
+  }
+
+  async update({ id, userId, ...data }: UpdateTaskDTO) {
+    return db.task.update({ where: { id, userId }, data })
+  }
+
+  async delete(id: string): Promise<void> {
+    await db.task.delete({ where: { id } })
+  }
+}

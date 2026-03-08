@@ -36,3 +36,9 @@ dist
 
 # pnpm
 .pnpm-store
+
+# Docker postgres data
+/data
+
+# Prisma generated client
+src/app/lib/prisma/generated/
