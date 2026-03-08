@@ -1,5 +1,5 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query'
-import { Loader2 } from 'lucide-react'
+import { ClipboardList, Loader2 } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { taskQueries } from '@/queries/tasks.queries'
 import { CreateTaskDialog } from './create-task-dialog'
@@ -59,6 +59,14 @@ export function TaskList() {
         ref={taskListContainerRef}
         className="min-h-0 flex-1 space-y-4 overflow-y-auto pb-4"
       >
+        {tasks.length === 0 && (
+          <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-muted-foreground">
+            <ClipboardList className="size-10 opacity-40" />
+            <p className="font-medium text-sm">No tasks yet</p>
+            <p className="text-xs">Create your first task to get started.</p>
+          </div>
+        )}
+
         {tasks.map((task) => (
           <TaskCard key={task.id} task={task} />
         ))}
