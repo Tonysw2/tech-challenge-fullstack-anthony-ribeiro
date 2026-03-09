@@ -43,27 +43,28 @@ async function main() {
 
     await db.task.deleteMany({ where: { userId: user.id } })
 
-    const tasks = Array.from({ length: 50 }, (_, i) => {
+    const baseTime = new Date()
+    for (let i = 0; i < 50; i++) {
       const index = i + 1
       const description = TASK_DESCRIPTIONS[i % TASK_DESCRIPTIONS.length]
-      return {
-        userId: user.id,
-        title: `Task ${index}: ${description}`,
-        description:
-          index % 3 === 0
-            ? null
-            : `Details for task ${index} assigned to ${userData.name}.`,
-        status: (index <= 25 ? 'PENDING' : 'COMPLETE') as
-          | 'PENDING'
-          | 'COMPLETE',
-      }
-    })
-
-    const result = await db.task.createMany({
-      data: tasks,
-      skipDuplicates: true,
-    })
-    console.log(`Created ${result.count} tasks for ${user.email}`)
+      const createdAt = new Date(baseTime.getTime() + i * 5000)
+      await db.task.create({
+        data: {
+          userId: user.id,
+          title: `Task ${index}: ${description}`,
+          description:
+            index % 3 === 0
+              ? null
+              : `Details for task ${index} assigned to ${userData.name}.`,
+          status: (index <= 25 ? 'PENDING' : 'COMPLETE') as
+            | 'PENDING'
+            | 'COMPLETE',
+          createdAt,
+          updatedAt: createdAt,
+        },
+      })
+    }
+    console.log(`Created 50 tasks for ${user.email}`)
   }
 }
 
