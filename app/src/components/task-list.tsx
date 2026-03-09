@@ -6,6 +6,7 @@ import { taskQueries } from '@/queries/tasks.queries'
 import { CreateTaskDialog } from './create-task-dialog'
 import { DeleteTaskDialog } from './delete-task-dialog'
 import { TaskCard } from './task-card'
+import { ScrollArea } from './ui/scroll-area'
 import { UpdateTaskDialog } from './update-task-dialog'
 
 export function TaskList() {
@@ -61,35 +62,37 @@ export function TaskList() {
         <CreateTaskDialog />
       </div>
 
-      <div
-        ref={taskListContainerRef}
-        className="min-h-0 flex-1 space-y-4 overflow-y-auto pb-4"
+      <ScrollArea
+        className="min-h-0 flex-1 pr-2"
+        viewportRef={taskListContainerRef}
       >
-        {tasks.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-muted-foreground">
-            <ClipboardList className="size-10 opacity-40" />
-            <p className="font-medium text-sm">No tasks yet</p>
-            <p className="text-xs">Create your first task to get started.</p>
-          </div>
-        )}
+        <div className="flex flex-col gap-4 p-1">
+          {tasks.length === 0 && (
+            <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-muted-foreground">
+              <ClipboardList className="size-10 opacity-40" />
+              <p className="font-medium text-sm">No tasks yet</p>
+              <p className="text-xs">Create your first task to get started.</p>
+            </div>
+          )}
 
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onEditClick={setTaskToEdit}
-            onDeleteClick={setTaskToDelete}
-          />
-        ))}
+          {tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onEditClick={setTaskToEdit}
+              onDeleteClick={setTaskToDelete}
+            />
+          ))}
 
-        {isFetchingNextPage && (
-          <div className="flex justify-center py-2">
-            <Loader2 className="size-5 animate-spin text-muted-foreground" />
-          </div>
-        )}
+          {isFetchingNextPage && (
+            <div className="flex justify-center py-2">
+              <Loader2 className="size-5 animate-spin text-muted-foreground" />
+            </div>
+          )}
 
-        {hasNextPage && <div ref={bottomTaskListTargetRef} />}
-      </div>
+          {hasNextPage && <div ref={bottomTaskListTargetRef} />}
+        </div>
+      </ScrollArea>
 
       {taskToEdit && (
         <UpdateTaskDialog
