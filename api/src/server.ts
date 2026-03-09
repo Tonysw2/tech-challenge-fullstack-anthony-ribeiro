@@ -1,13 +1,14 @@
-import { app } from './app/app.js'
+import { app } from "./app/app.js";
+import { env } from "./env.js";
 
 const start = async () => {
   try {
-    await app.listen({ port: 3333 })
-    console.log('Server running on port 3333 🔥')
+    await app.listen({ port: env.PORT });
+    console.log(`Server running on port ${env.PORT} 🔥`);
   } catch (err) {
-    app.log.error(err)
-    process.exit(1)
+    app.log.error(err);
+    process.exit(1);
   }
-}
+};
 
-start()
+start();
