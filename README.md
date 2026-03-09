@@ -2,6 +2,8 @@
 
 Sistema de gestão de tarefas com autenticação JWT. Monorepo com backend em Fastify e frontend em React.
 
+**Demo:** https://tech-challenge-fullstack-anthony-ri.vercel.app
+
 ## Stack
 
 **Backend**
@@ -110,20 +112,44 @@ GitHub Actions executa em todo push e PR para `main`:
 
 ## Deploy em produção
 
-**Backend** — plataformas como Railway, Render ou Fly.io:
+A aplicação está publicada:
+
+- **Frontend**: Vercel — https://tech-challenge-fullstack-anthony-ri.vercel.app
+- **Backend**: Railway
+- **Banco de dados**: PostgreSQL gerenciado no Railway
+
+### Variáveis de ambiente necessárias em produção
+
+**API (Railway)**:
+
+| Variável | Descrição |
+| --- | --- |
+| `DATABASE_URL` | Connection string do PostgreSQL |
+| `JWT_SECRET` | Secret para access tokens |
+| `JWT_REFRESH_TOKEN_SECRET` | Secret para refresh tokens |
+| `CORS_ORIGIN` | URL do frontend em produção |
+| `PORT` | Porta da aplicação (injetada automaticamente pela plataforma) |
+
+**Frontend (Vercel)**:
+
+| Variável | Descrição |
+| --- | --- |
+| `VITE_API_URL` | URL da API em produção |
+
+### Como seria feito do zero
+
+**Backend** — Railway (ou Render/Fly.io):
 
 1. Configurar as variáveis de ambiente no painel da plataforma
 2. Gerar o client Prisma: `pnpm exec prisma generate`
 3. Rodar as migrations antes de iniciar: `pnpm exec prisma migrate deploy`
-4. Iniciar o servidor: `node src/server.ts` via tsx ou compilar com `tsc` e rodar com `node`
+4. Iniciar o servidor via `pnpm start` (já inclui `prisma migrate deploy` antes de subir)
 
-**Frontend** — plataformas como Vercel ou Netlify:
+**Frontend** — Vercel:
 
 1. Definir `VITE_API_URL` apontando para a URL da API em produção
 2. Build command: `pnpm build`
 3. Output directory: `dist`
-
-**Banco de dados** — usar uma instância gerenciada (ex: Supabase, Neon, Railway Postgres) e fornecer a connection string como `DATABASE_URL`.
 
 ## Perguntas técnicas
 
